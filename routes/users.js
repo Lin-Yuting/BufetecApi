@@ -24,45 +24,81 @@ router.get("/biblioteca", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const newUser = req.body;
-    const user = await User.findOne({ where: { email: newUser.email } });
 
-    if (!user) {
-        await User.create(newUser);
+    try{
+        const newUser = req.body;
+        const user = await User.findOne({ where: {user_email: newUser.user_email } });
 
-        const token = jwt.sign(
-            { id: newUser.id, email: newUser.email, role: newUser.role },
-            process.env.SECRET,
-            { expiresIn: "1h" }
-        );
+        if (!user) {
+            await User.create(newUser);
 
-        res.status(201).json({ message: "User created successfully", token: token });
-    } else {
-        return res.status(401).json({ message: "User already exists" });
-    }
-});
-
-router.post("/login", async (req, res) => {
-    const loginUser = req.body;
-    const user = await User.findOne({ where: { email: loginUser.email } });
-
-    if (!user) {
-        return res.status(401).json({ message: 'Authentication failed' });
-    } else {
-        const valid = await bcrypt.compare(loginUser.password, user.password);
-
-        if (valid) {
             const token = jwt.sign(
-                { id: user.id, email: user.email, role: user.role },
+                { id_user: newUser.id_user, user_email: newUser.user_email, user_role: newUser.user_type },
                 process.env.SECRET,
                 { expiresIn: "1h" }
             );
-
-            res.status(200).json({ message: "User logged in", token: token });
+            res.status(201).json({ message: "User created successfully", token: token });
         } else {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "User already exists" });
         }
     }
+    catch(e){
+        return res.status(500).json({message: e.message})
+    }
+
+});
+
+router.post("/login", async (req, res) => {
+    try{
+        const loginUser = req.body;
+        const user = await User.findOne({ where: { user_email: loginUser.user_email } });
+
+        if (!user) {
+            return res.status(401).json({ message: 'Authentication failed' });
+        } else {
+            const valid = await bcrypt.compare(loginUser.password, user.password);
+
+            if (valid) {
+                const token = jwt.sign(
+                    { id_user: user.id_user, user_email: user.user_email, user_role: user.user_role },
+                    process.env.SECRET,
+                    { expiresIn: "1h" }
+                );
+
+                res.status(200).json({ message: "User logged in", token: token });
+            } else {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
+        }
+    }
+    catch(e){
+        return res.status(500).json({ message: e.message });
+    }
+});
+
+
+// Eliminar cuenta de usuario 
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Busca al usuario por ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Borra el usuario
+    await user.destroy();
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: error.message });
+  }
 });
 
 // Nuevos Endpoints para las tablas adicionales
