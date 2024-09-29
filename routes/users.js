@@ -79,12 +79,12 @@ router.post("/login", async (req, res) => {
 
 // Eliminar cuenta de usuario 
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:email", async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userEmail = req.params.email;
 
-    // Busca al usuario por ID
-    const user = await User.findByPk(userId);
+    // Busca al usuario por correo electrónico
+    const user = await User.findOne({ where: { user_email: userEmail } });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
