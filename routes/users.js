@@ -62,6 +62,7 @@ router.post("/login", async (req, res) => {
                     process.env.SECRET,
                     { expiresIn: "1h" }
                 );
+            //coment
 
             res.status(200).json({ message: "User logged in", token: token });
         //     const valid = await bcrypt.compare(loginUser.password, user.password);
