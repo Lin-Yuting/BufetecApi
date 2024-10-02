@@ -29,8 +29,6 @@ router.post("/register", async (req, res) => {
         const newUser = req.body;
         const user = await User.findOne({ where: {user_email: newUser.user_email } });
 
-        if (!user) {
-            await User.create(newUser);
 
             const token = jwt.sign(
                 { id_user: newUser.id_user, user_email: newUser.user_email, user_role: newUser.user_type },
@@ -38,9 +36,7 @@ router.post("/register", async (req, res) => {
                 { expiresIn: "1h" }
             );
             res.status(201).json({ message: "User created successfully", token: token });
-        } else {
-            return res.status(401).json({ message: "User already exists" });
-        }
+
     }
     catch(e){
         return res.status(500).json({message: e.message})
