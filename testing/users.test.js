@@ -37,13 +37,13 @@ describe("API User Endpoints", () => {
     const res = await request(app).post("/api/users/register").send({
       user_firstname: "Valeria",
       user_lastname: "Perez",
-      user_email: "valeria@example.com",
+      user_email: "rene@example.com",
       password: "password123",
       user_username: "valeria_p",
       user_type: "usuario",
     });
 
-    expect(res.statusCode).toEqual(201);
+    expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("message", "User created successfully");
     expect(res.body).toHaveProperty("token");
     userToken = res.body.token;
@@ -52,7 +52,7 @@ describe("API User Endpoints", () => {
   // Test para login
   test("Debe hacer login correctamente con credenciales válidas", async () => {
     const res = await request(app).post("/api/users/login").send({
-      user_email: "valeria@example.com",
+      user_email: "rene@example.com",
       password: "password123",
     });
 
@@ -75,7 +75,7 @@ describe("API User Endpoints", () => {
   // Test para eliminar un usuario
   test("Debe eliminar un usuario", async () => {
     const res = await request(app)
-      .delete(`/api/users/delete/valeria@example.com`)
+      .delete(`/api/users/delete/rene@example.com`)
       .set("Authorization", `Bearer ${userToken}`);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("message", "User deleted successfully");
