@@ -41,6 +41,7 @@ router.post("/register", async (req, res) => {
       process.env.SECRET,
       { expiresIn: "1h" }
     );
+    
     res
       .status(201)
       .json({ message: "User created successfully", token: token });
