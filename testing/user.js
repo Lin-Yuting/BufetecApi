@@ -6,7 +6,7 @@
 */
 
 link_localhost = "http://localhost:3001/";
-link_production = ""
+link_production = "https://bufetecapi-3fe3.onrender.com/";
 
 const test = {
 
