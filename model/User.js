@@ -18,7 +18,7 @@ const User = sequelize.define('User', {
   },
   user_type: {
     type: DataTypes.STRING,
-    defaultValue: 'usuario'
+    defaultValue: 'usuario', 
   },
   user_username: {
     type: DataTypes.STRING,

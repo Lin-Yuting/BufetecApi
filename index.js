@@ -1,7 +1,11 @@
 require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const sequelize = require("./config/database");
+
+// Habilitar CORS para todos los orígenes
+app.use(cors());
 
 app.use(express.json());
 
