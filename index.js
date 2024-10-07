@@ -3,33 +3,56 @@ const cors = require("cors");
 const express = require("express");
 const app = express();
 const sequelize = require("./config/database");
+const Event = require('./model/Event');
+
+const { syncCalendlyToGoogleCalendar } = require('./syncCalendlyToGoogle');
+
+// Import and configure node-cron
+const cron = require('node-cron');
+
+// Import OAuth routes
+const authRoutes = require('./routes/auth');
 
 // Habilitar CORS para todos los orígenes
 app.use(cors());
 
 app.use(express.json());
 
+// Use OAuth routes
+app.use('/api/auth', authRoutes);
+
 sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
-    return sequelize.sync(); // Esta línea sincroniza los modelos con la base de datos.
+    return sequelize.sync(); // Sync all defined models to the DB
+  })
+  .then(() => {
+    console.log("Database synchronized successfully.");
+    // Initial synchronization on server startup
+    syncCalendlyToGoogleCalendar();
+
+    // Schedule synchronization every hour
+    cron.schedule('0 * * * *', () => {
+      console.log('Running scheduled synchronization task...');
+      syncCalendlyToGoogleCalendar();
+    });
   })
   .catch((err) => {
     console.error("Unable to connect to the database:", err);
   });
 
 app.get("/", (req, res) =>
-  res.send("<h1> Welcome api webserver</h1>").status(200)
+  res.status(200).send("<h1> Welcome api webserver</h1>")
 );
 
-app.get("/test", (req, res) => res.send("test").status(200));
+app.get("/test", (req, res) => res.status(200).send("test"));
 
-// Import routes
+// Import user routes
 const userRoutes = require("./routes/users");
 
-// Use routes
+// Use user routes
 app.use("/api/users", userRoutes);
 
-// Exports app to be used in testing, app.js executes the app
+// Export the app for testing or other uses
 module.exports = app;

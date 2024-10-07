@@ -1,9 +1,11 @@
+require('dotenv').config();
 const User = require('./User');
 const Catalogo_Clientes = require('./Catalogo_Clientes');
 const Citas = require('./Citas');
 const Abogados = require('./Abogados');
 const ProcesosLeg = require('./ProcesosLeg');
 const RecursosEducativos = require('./RecursosEducativos');
+const Event = require('./Event');
 
 // Definir las relaciones entre los modelos
 User.hasMany(Catalogo_Clientes, { foreignKey: 'Id_user_cliente' });
@@ -22,5 +24,6 @@ module.exports = {
   Citas,
   Abogados,
   ProcesosLeg,
-  RecursosEducativos
+  RecursosEducativos,
+  Event
 };
