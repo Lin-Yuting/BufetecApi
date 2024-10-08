@@ -56,23 +56,24 @@ router.post("/login", async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed' });
         } else {
+            const valid = await bcrypt.compare(loginUser.password, user.password);
+            if (!valid) { 
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
+            
+          const token = jwt.sign(
+            {
+              id_user: user.id_user,
+              user_email: user.user_email,
+              user_role: user.user_role,
+            },
+            process.env.SECRET,
+            { expiresIn: "1h" }
+          );
+          //coment
 
-            const token = jwt.sign(
-                    { id_user: user.id_user, user_email: user.user_email, user_role: user.user_role },
-                    process.env.SECRET,
-                    { expiresIn: "1h" }
-                );
-            //coment
-
-            res.status(200).json({ message: "User logged in", token: token });
-        //     const valid = await bcrypt.compare(loginUser.password, user.password);
-
-        //     if (valid) {
-
-        //     } else {
-        //         return res.status(401).json({ message: "Invalid credentials" });
-        //     }
-    }
+          res.status(200).json({ message: "User logged in", token: token });
+        }
     }
     catch(e){
         return res.status(500).json({ message: e.message });
