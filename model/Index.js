@@ -17,6 +17,9 @@ Citas.belongsTo(Catalogo_Clientes, { foreignKey: 'Cliente' });
 Abogados.hasMany(Citas, { foreignKey: 'Abogado' });
 Citas.belongsTo(Abogados, { foreignKey: 'Abogado' });
 
+Event.hasMany(Citas, { foreignKey: 'googleEventId' });
+Citas.belongsTo(Event, { foreignKey: 'googleEventId' });
+
 // Exportar todos los modelos para poder usarlos en otras partes del proyecto
 module.exports = {
   User,

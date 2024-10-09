@@ -7,21 +7,12 @@ const Citas = sequelize.define('Citas', {
     primaryKey: true,
     autoIncrement: true
   },
-  Tipo_Cita: {
+  id_evento: {
     type: DataTypes.STRING,
-    defaultValue: 'Asesoria'
-  },
-  Dia: {
-    type: DataTypes.DATEONLY,
-    allowNull: false
-  },
-  Hora: {
-    type: DataTypes.TIME,
-    allowNull: false
-  },
-  Duracion_Cita: {
-    type: DataTypes.TIME,
-    allowNull: false
+    references: {
+      model: 'event',
+      key: 'googleEventId'
+    }
   },
   Cliente: {
     type: DataTypes.INTEGER,
