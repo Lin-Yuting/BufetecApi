@@ -10,7 +10,7 @@ const Citas = sequelize.define('Citas', {
   id_evento: {
     type: DataTypes.STRING,
     references: {
-      model: 'event',
+      model: 'events',
       key: 'googleEventId'
     }
   },
