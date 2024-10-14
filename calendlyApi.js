@@ -10,10 +10,6 @@ if (!calendlyToken) {
   console.log('Calendly token loaded successfully.');
 }
 
-/**
- * Fetches active Calendly events for the authenticated user.
- * @returns {Array} Array of active Calendly events.
- */
 async function fetchCalendlyEvents() {
   try {
     // Fetch user details
@@ -27,6 +23,9 @@ async function fetchCalendlyEvents() {
     const userUri = userResponse.data.resource.uri;
     console.log(`Fetched User URI: ${userUri}`);
 
+    // Get the current date-time in ISO 8601 format
+    const currentTime = new Date().toISOString();
+
     // Fetch scheduled events for the user
     const eventsResponse = await axios.get('https://api.calendly.com/scheduled_events', {
       headers: {
@@ -36,6 +35,7 @@ async function fetchCalendlyEvents() {
       params: {
         user: userUri,
         count: 50,
+        min_start_time: currentTime, // Only fetch events starting now or in the future
       },
     });
 
